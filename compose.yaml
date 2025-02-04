@@ -1,0 +1,15 @@
+services:
+  dev:
+    hostname: vscode-lite-ssh-dev
+    build:
+      context: ./
+      dockerfile: dev.Dockerfile
+    volumes:
+        - ./:/workspace
+        - ./scripts/entrypoint.sh:/entrypoint
+        - lingma:/root/.lingma
+        - docker:/var/lib/docker
+    privileged: true
+volumes:
+  lingma:
+  docker:
