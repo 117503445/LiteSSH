@@ -1,1 +1,4 @@
 compose.override.yaml
+node_modules
+.pnpm-store
+dist
