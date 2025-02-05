@@ -28,3 +28,6 @@ For more information, also visit http://code.visualstudio.com and follow us @cod
 pnpm install
 pnpm approve-builds
 pnpm run package-web
+
+npm install -g @vscode/vsce
+vsce package
