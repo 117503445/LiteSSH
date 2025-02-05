@@ -31,3 +31,4 @@ pnpm run package-web
 
 npm install -g @vscode/vsce
 vsce package
+code-server --install-extension litessh-0.0.1.vsix
