@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  default:
+    desc: "The default task" 
+    dir: ext1
+    cmds:
+      - vsce package --allow-missing-repository
+      # - code-server --uninstall-extension undefined_publisher.ext1
+      - code-server --install-extension ext1-0.0.1.vsix
+    

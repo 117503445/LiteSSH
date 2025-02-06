@@ -3,6 +3,8 @@
   "displayName": "ext1",
   "description": "",
   "version": "0.0.1",
+  "publisher": "117503445",
+  "repository": "https://github.com/117503445/vscode-lite-ssh",
   "engines": {
     "vscode": "^1.96.0"
   },
