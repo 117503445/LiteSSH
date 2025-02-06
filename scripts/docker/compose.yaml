@@ -1,0 +1,8 @@
+services:
+  sshd:
+    image: 117503445/sshd
+    restart: unless-stopped
+    environment:
+      - PASSWORD=123456
+    ports:
+      - "22:22"

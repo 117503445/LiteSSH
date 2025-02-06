@@ -35,6 +35,8 @@ code-server --install-extension litessh-0.0.1.vsix
 code-server --install-extension ext1-0.0.1.vsix
 
 pacman -Sy --noconfirm rclone
+pacman -Sy --noconfirm sshpass
 /root/.config/rclone/rclone.conf
 mkdir /remote
 rclone mount s: /remote --allow-non-empty --allow-other --vfs-cache-mode full -vvv
+sshpass -p 123456 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.1
