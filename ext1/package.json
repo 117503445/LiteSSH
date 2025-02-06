@@ -21,7 +21,7 @@
       },
       {
         "command": "ext1.runInTerminal",
-        "title": "runInTerminal"
+        "title": "Run In Terminal"
       }
     ],
     "menus": {

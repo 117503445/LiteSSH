@@ -41,7 +41,19 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	context.subscriptions.push(vscode.commands.registerCommand('ext1.runInTerminal', (resourceUri) => {
-		printChannelOutput('runInTerminal');
+		printChannelOutput('runInTerminal' + resourceUri.fsPath);
+
+		if (!resourceUri) {return;}
+
+        const terminal = vscode.window.createTerminal(`Run ${resourceUri.fsPath}`);
+        if (resourceUri.scheme === 'file') { // 确保是文件系统资源
+            if (resourceUri.path.endsWith('/')) { // 判断是否为目录
+                terminal.sendText(`cd "${resourceUri.fsPath}" && ls`);
+            } else {
+                terminal.sendText(`"${resourceUri.fsPath}"`); // 根据实际需求修改命令
+            }
+            terminal.show();
+        }
 	}));
 }
 
