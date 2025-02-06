@@ -18,8 +18,20 @@
       {
         "command": "ext1.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "ext1.runInTerminal",
+        "title": "runInTerminal"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "ext1.runInTerminal",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
