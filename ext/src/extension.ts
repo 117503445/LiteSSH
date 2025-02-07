@@ -1,5 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
+import { get } from 'http';
 import * as vscode from 'vscode';
 
 let outputChannel: vscode.OutputChannel;
@@ -16,6 +17,20 @@ export const printChannelOutput = (content: string, reveal = false): void => {
 		outputChannel.show(true);
 	}
 };
+
+function getTerminalName(fsPath: string): string {
+	return "";
+	const defaultName = 'Remote Terminal';
+
+	const splits = fsPath.split('/');
+	if (splits.length <= 1) {
+		return defaultName;
+	}
+	if (splits[0] !== 'remote') {
+		return defaultName;
+	}
+	return splits[1];
+}
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -34,14 +49,10 @@ export function activate(context: vscode.ExtensionContext) {
 		if (resourceUri.scheme === 'file') {
 			const fsPath = resourceUri.fsPath;
 			printChannelOutput('fsPath' + fsPath);
-			const terminal = vscode.window.createTerminal(`Remote Terminal`);
+			const terminal = vscode.window.createTerminal(getTerminalName(fsPath));
 			terminal.sendText(`cd "${fsPath}" && ls`);
 			terminal.show();
 		}
-
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from LiteSSH!');
 	});
 
 	context.subscriptions.push(disposable);
