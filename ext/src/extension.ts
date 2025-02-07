@@ -50,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 			const fsPath = resourceUri.fsPath;
 			printChannelOutput('fsPath' + fsPath);
 			const terminal = vscode.window.createTerminal(getTerminalName(fsPath));
-			terminal.sendText(`cd "${fsPath}" && ls`);
+			terminal.sendText(`r ${fsPath}`);
 			terminal.show();
 		}
 	});

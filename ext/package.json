@@ -17,14 +17,14 @@
     "commands": [
       {
         "command": "litessh.remoteTerminal",
-        "title": "Open Remote Terminal"
+        "title": "Open in Remote Terminal"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "command": "litessh.remoteTerminal",
-          "group": "navigation"
+          "group": "navigation@100"
         }
       ]
     }

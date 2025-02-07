@@ -16,3 +16,7 @@ tasks:
   run:
     cmds:
       - go run .
+  
+  install-r:
+    cmds:
+      - go install ./cmd/r
