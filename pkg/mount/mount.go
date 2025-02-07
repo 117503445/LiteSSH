@@ -1,10 +1,12 @@
 package mount
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"sync"
 
+	"github.com/117503445/goutils"
 	"github.com/117503445/vscode-lite-ssh/pkg/cli"
 	"github.com/rs/zerolog/log"
 )
@@ -28,7 +30,24 @@ func (m *MountManager) Start() {
 	}
 
 	writeRcloneCfg := func() {
-		// TODO
+		text := ""
+
+		for name, node := range m.nodes {
+			text += fmt.Sprintf(
+				`
+[%v]
+type = sftp
+host = %v
+port = %v
+user = %v
+key_file = %v
+`, name, node.Host, node.Port, node.User, node.Pri)
+		}
+
+		err := goutils.WriteText("/root/.config/rclone/rclone.conf", text)
+		if err != nil {
+			log.Fatal().Err(err).Msg("write rclone.conf failed")
+		}
 	}
 	writeRcloneCfg()
 

@@ -14,7 +14,6 @@ type SshNode struct {
 	Port int    `help:"node port"`
 	User string `help:"node user"`
 	Pri  string `help:"node private key path"`
-	Pass string `help:"node password"`
 }
 
 var Cli struct {
@@ -52,16 +51,11 @@ func cfgCheck() {
 			logger.Warn().Msg("node user is empty, use default root")
 		}
 
-		if node.Pri != "" {
+		if node.Pri == "" {
+			logger.Fatal().Msg("node pri is empty")
+		} else {
 			if !goutils.FileExists(node.Pri) {
 				logger.Fatal().Msg("node pubkey path is not exists")
-			}
-			if node.Pass != "" {
-				logger.Warn().Msg("node password will be ignored")
-			}
-		} else {
-			if node.Pass == "" {
-				logger.Fatal().Msg("node auth missing, please set node pubkey path or password")
 			}
 		}
 	}
@@ -82,22 +76,11 @@ func cfgSetDefault() {
 				user = node.User
 			}
 
-			pri := ""
-			pass := ""
-			if node.Pri != "" {
-				pri = node.Pri
-			} else if node.Pass != "" {
-				pass = node.Pass
-			} else {
-				panic(`node.Pri == "" && node.Pass == ""`)
-			}
-
 			newNode := SshNode{
 				Host: node.Host,
 				Port: port,
 				User: user,
-				Pri:  pri,
-				Pass: pass,
+				Pri:  node.Pri,
 			}
 			newNodes[name] = newNode
 		}
