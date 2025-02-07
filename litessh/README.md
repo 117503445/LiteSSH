@@ -1,3 +1,0 @@
-# litessh README
-
-wip
