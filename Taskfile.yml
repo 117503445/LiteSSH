@@ -7,11 +7,11 @@ tasks:
 
   ext:
     desc: "Build and Install extension"
-    dir: ext1
+    dir: ext
     cmds:
       - vsce package --allow-missing-repository
       # - code-server --uninstall-extension undefined_publisher.ext1
-      - code-server --install-extension ext1-0.0.1.vsix
+      - code-server --install-extension litessh-0.0.1.vsix
   
   run:
     cmds:
