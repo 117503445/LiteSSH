@@ -15,7 +15,7 @@ tasks:
   
   run:
     cmds:
-      - go run .
+      - go run ./cmd/litessh
   
   install-r:
     cmds:
