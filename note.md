@@ -44,3 +44,4 @@ mkdir /remote
 rclone mount s: /remote --allow-non-empty --allow-other --vfs-cache-mode full -vvv
 sshpass -p 123456 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@127.0.0.1
 
+fusermount3 -uz /remote/test

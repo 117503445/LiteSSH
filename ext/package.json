@@ -16,10 +16,18 @@
   "contributes": {
     "commands": [
       {
-        "command": "litessh.helloWorld",
-        "title": "Hello World"
+        "command": "litessh.remoteTerminal",
+        "title": "Open Remote Terminal"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "litessh.remoteTerminal",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
