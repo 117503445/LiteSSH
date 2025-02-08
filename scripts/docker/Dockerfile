@@ -41,6 +41,8 @@ RUN if [ -n "$CHINA_MIRROR" ]; then \
     fi
 RUN npm install --global @vscode/vsce
 
+RUN pacman -Sy --noconfirm rclone fuse3
+
 COPY ./ext /tmp/ext
 WORKDIR /tmp/ext
 RUN vsce package --allow-missing-repository

@@ -68,6 +68,10 @@ func main() {
 		execWithLogs([]string{"/usr/sbin/code-server"}, fmt.Sprintf("%s/code-server", dirLogs))
 	}()
 
+	go func() {
+		execWithLogs([]string{"litessh"}, fmt.Sprintf("%s/litessh-mount", dirLogs))
+	}()
+
 	var isTTY bool
 	if isatty.IsTerminal(os.Stdout.Fd()) {
 		isTTY = true
