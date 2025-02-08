@@ -45,6 +45,7 @@ RUN pacman -Sy --noconfirm rclone fuse3
 
 COPY ./ext /tmp/ext
 WORKDIR /tmp/ext
+RUN pnpm install
 RUN vsce package --allow-missing-repository
 RUN code-server --install-extension litessh-0.0.1.vsix
 
