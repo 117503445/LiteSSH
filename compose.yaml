@@ -10,6 +10,8 @@ services:
         - lingma:/root/.lingma
         - docker:/var/lib/docker
     privileged: true
+    ports:
+      - 4445:4445
 volumes:
   lingma:
   docker:

@@ -83,7 +83,7 @@ func main() {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stdout
 		err := cmd.Run()
-		if err != nil {
+		if err != nil && err.Error() != "exit status 127" {
 			log.Error().Err(err).Msg("Failed to run fish shell")
 		}
 	} else {

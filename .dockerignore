@@ -1,3 +1,5 @@
 .git
 .pnpm-store
 README.md
+Taskfile.yml
+note.md

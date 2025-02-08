@@ -34,6 +34,18 @@ RUN vsc-init
 RUN chsh -s /usr/bin/fish
 COPY ./scripts/config.fish /root/.config/fish/config.fish
 
+RUN pacman -Syu npm pnpm --noconfirm
+RUN if [ -n "$CHINA_MIRROR" ]; then \
+        npm config set registry https://registry.npmmirror.com; \
+        pnpm config set registry https://registry.npmmirror.com; \
+    fi
+RUN npm install --global @vscode/vsce
+
+COPY ./ext /tmp/ext
+WORKDIR /tmp/ext
+RUN vsce package --allow-missing-repository
+RUN code-server --install-extension litessh-0.0.1.vsix
+
 COPY go.mod go.sum /tmp/litessh/
 WORKDIR /tmp/litessh
 RUN go mod download
