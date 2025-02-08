@@ -18,6 +18,8 @@ RUN if [ -n "$CHINA_MIRROR" ]; then \
         go env -w GOPROXY=https://goproxy.cn,direct; \
     fi
 
+ENV PATH="$PATH:/root/go/bin"
+
 RUN useradd -m -G wheel builder && \
     chown -R builder:builder /tmp && \
     echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers && \
@@ -25,9 +27,21 @@ RUN useradd -m -G wheel builder && \
     rm -rf /tmp/yay
 
 RUN su - builder -c "yay -Su code-server --noconfirm"
-RUN go install github.com/117503445/vsc-init@master && vsc-init
+RUN go install github.com/117503445/vsc-init@master
+# ENTRYPOINT [ "fish" ]
+RUN vsc-init
 
 RUN chsh -s /usr/bin/fish
 COPY ./scripts/config.fish /root/.config/fish/config.fish
 
+COPY go.mod go.sum /tmp/litessh/
+WORKDIR /tmp/litessh
+RUN go mod download
+COPY . /tmp/litessh
+RUN go install ./cmd/entrypoint
+RUN go install ./cmd/litessh
+RUN go install ./cmd/r
+RUN rm -rf /tmp/litessh
+
 WORKDIR /workspace
+ENTRYPOINT [ "entrypoint" ]

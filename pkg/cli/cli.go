@@ -1,5 +1,7 @@
 package cli
 
+import "maps"
+
 import (
 	"regexp"
 
@@ -17,14 +19,14 @@ type SshNode struct {
 }
 
 var Cli struct {
-	CodeServerPassword string `help:"code-server password"`
-	Nodes map[string]SshNode `help:"nodes"`
+	CodeServerPassword string             `help:"code-server password"`
+	Nodes              map[string]SshNode `help:"nodes"`
 }
 
 func cfgCheck() {
-	if len(Cli.Nodes) == 0 {
-		log.Fatal().Msg("nodes is empty")
-	}
+	// if Cli.Nodes == nil {
+	// 	log.Fatal().Msg("nodes is empty")
+	// }
 
 	// name must only contain [a-zA-Z0-9_]
 	isValidName := func(name string) bool {
@@ -63,6 +65,10 @@ func cfgCheck() {
 }
 
 func cfgSetDefault() {
+	if Cli.Nodes == nil {
+		Cli.Nodes = make(map[string]SshNode)
+	}
+
 	newNodes := make(map[string]SshNode)
 	for name, node := range Cli.Nodes {
 		newNodes[name] = node
@@ -86,9 +92,8 @@ func cfgSetDefault() {
 			newNodes[name] = newNode
 		}
 	}
-	for name, node := range newNodes {
-		Cli.Nodes[name] = node
-	}
+	maps.Copy(Cli.Nodes, newNodes)
+
 }
 
 func CfgLoad() {

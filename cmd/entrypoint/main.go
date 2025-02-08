@@ -13,8 +13,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var codeServerConfig = `auth: password
-cert: false`
+var codeServerConfig = `cert: false
+bind-addr: 0.0.0.0:4444`
 
 const dirLogs = "/workspace/logs"
 
@@ -38,7 +38,7 @@ func execWithLogs(cmds []string, dirLog string) {
 	cmd.Stdout = file
 	cmd.Stderr = file
 	if err := cmd.Run(); err != nil {
-		log.Error().Err(err).Msg("Failed to exec")
+		log.Error().Str("cmd", cmd.String()).Err(err).Msg("Failed to exec")
 	}
 }
 
@@ -54,9 +54,10 @@ func main() {
 	cli.CfgLoad()
 
 	codeServerConfigPath := "/root/.config/code-server/config.yaml"
-	codeServerPassword := cli.Cli.CodeServerPassword
-	if codeServerPassword != "" {
-		codeServerConfig += fmt.Sprintf("\npassword: %s", codeServerPassword)
+	if cli.Cli.CodeServerPassword != "" {
+		codeServerConfig += fmt.Sprintf("\nauth: password\npassword: %s", cli.Cli.CodeServerPassword)
+	}else{
+		codeServerConfig += "\nauth: none"
 	}
 	err = goutils.WriteText(codeServerConfigPath, codeServerConfig)
 	if err != nil {
