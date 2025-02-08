@@ -25,6 +25,7 @@ RUN useradd -m -G wheel builder && \
     rm -rf /tmp/yay
 
 RUN su - builder -c "yay -Su code-server --noconfirm"
+RUN go install github.com/117503445/vsc-init@master && vsc-init
 
 RUN chsh -s /usr/bin/fish
 COPY ./scripts/config.fish /root/.config/fish/config.fish

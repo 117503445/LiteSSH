@@ -17,6 +17,7 @@ type SshNode struct {
 }
 
 var Cli struct {
+	CodeServerPassword string `help:"code-server password"`
 	Nodes map[string]SshNode `help:"nodes"`
 }
 

@@ -1,4 +1,0 @@
-# bind-addr: 0.0.0.0:4444
-auth: password
-password: %s
-cert: false

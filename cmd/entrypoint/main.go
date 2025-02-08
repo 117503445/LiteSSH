@@ -8,52 +8,64 @@ import (
 	_ "embed"
 
 	"github.com/117503445/goutils"
+	"github.com/117503445/vscode-lite-ssh/pkg/cli"
 	"github.com/mattn/go-isatty"
 	"github.com/rs/zerolog/log"
 )
 
-//go:embed code-server-config-template.yaml
-var codeServerConfigTemplate string
+var codeServerConfig = `auth: password
+cert: false`
+
+const dirLogs = "/workspace/logs"
+
+func getLogFileName(dir string) string {
+	return fmt.Sprintf("%s/%s.log", dir, goutils.TimeStrSec())
+}
+
+func execWithLogs(cmds []string, dirLog string) {
+	err := os.MkdirAll(dirLog, 0755)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create code-server logs directory")
+	}
+
+	file, err := os.OpenFile(getLogFileName(dirLog), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to open goreman.log")
+	}
+	defer file.Close()
+
+	cmd := exec.Command(cmds[0], cmds[1:]...)
+	cmd.Stdout = file
+	cmd.Stderr = file
+	if err := cmd.Run(); err != nil {
+		log.Error().Err(err).Msg("Failed to exec")
+	}
+}
 
 func main() {
 	goutils.InitZeroLog()
 	goutils.ExecOpt.DumpOutput = true
 
-	codeServerConfigPath := "/root/.config/code-server/config.yaml"
-	codeServerPassword := os.Getenv("CODE_SERVER_PASSWORD")
-	if codeServerPassword == "" {
-		log.Warn().Msg("CODE_SERVER_PASSWORD is not set, use default password")
-		codeServerPassword = "123456"
+	err := os.MkdirAll(dirLogs, 0755)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create logs directory")
 	}
-	codeServerConfigText := fmt.Sprintf(codeServerConfigTemplate, codeServerPassword)
-	err := goutils.WriteText(codeServerConfigPath, codeServerConfigText)
+
+	cli.CfgLoad()
+
+	codeServerConfigPath := "/root/.config/code-server/config.yaml"
+	codeServerPassword := cli.Cli.CodeServerPassword
+	if codeServerPassword != "" {
+		codeServerConfig += fmt.Sprintf("\npassword: %s", codeServerPassword)
+	}
+	err = goutils.WriteText(codeServerConfigPath, codeServerConfig)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to write code-server config file")
 	}
 
 	go func() {
-		file, err := os.OpenFile("/docker-dev/logs/goreman.log", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
-		if err != nil {
-			fmt.Println("Error opening file:", err)
-			return
-		}
-		defer file.Close()
-
-		cmd := exec.Command("goreman", "start")
-		// cmd.Stdin = os.Stdin
-		cmd.Stdout = file
-		cmd.Stderr = file
-		cmd.Dir = "/docker-dev"
-		log.Info().Str("log", "/docker-dev/logs/goreman.log").Msg("Starting goreman")
-		if err := cmd.Run(); err != nil {
-			log.Error().Err(err).Msg("Failed to run goreman")
-		}
+		execWithLogs([]string{"/usr/sbin/code-server"}, fmt.Sprintf("%s/code-server", dirLogs))
 	}()
-
-	fileCustomEntrypoint := "/entrypoint"
-	if goutils.PathExists(fileCustomEntrypoint) {
-		goutils.Exec(fileCustomEntrypoint)
-	}
 
 	var isTTY bool
 	if isatty.IsTerminal(os.Stdout.Fd()) {
@@ -64,19 +76,15 @@ func main() {
 		isTTY = false
 	}
 
-	// log.Debug().Bool("isTTY", isTTY).Msg("Check if TTY")
-
 	if isTTY {
 		cmd := exec.Command("/bin/fish")
 		cmd.Stdin = os.Stdin
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stdout
-		// log.Debug().Msg("Enter fish shell")
 		err := cmd.Run()
 		if err != nil {
 			log.Error().Err(err).Msg("Failed to run fish shell")
 		}
-		// log.Debug().Msg("Exit fish shell")
 	} else {
 		goutils.Exec("tail -f /dev/null")
 	}
