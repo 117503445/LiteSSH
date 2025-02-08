@@ -20,3 +20,10 @@ tasks:
   install-r:
     cmds:
       - go install ./cmd/r
+
+  build-mainland:
+    desc: "Build the image in China Mainland"
+    cmds:
+      - docker pull registry.cn-hangzhou.aliyuncs.com/117503445-mirror/sync:linux.amd64.docker.io.library.archlinux.latest
+      - docker tag registry.cn-hangzhou.aliyuncs.com/117503445-mirror/sync:linux.amd64.docker.io.library.archlinux.latest archlinux
+      - docker build --pull=false -t 117503445/litessh -f ./scripts/docker/Dockerfile --build-arg CHINA_MIRROR=1 .
