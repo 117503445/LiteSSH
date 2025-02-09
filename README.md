@@ -1,38 +1,106 @@
 # LiteSSH
 
-> 轻量级的多服务器管理，强大的 VSCode 编辑体验，让远程工作更加高效无缝
+> Lightweight multi-server management with a powerful VSCode editing experience makes remote work more efficient and seamless.
 
-LiteSSH 具有以下优点
+LiteSSH has the following advantages:
 
-- 强大的文件编辑体验：基于 VSCode，支持语法高亮、智能提示、快捷键
-- 多服务器支持：在多个服务器之间复制、移动文件
-- 开源：防止恶意的密钥泄露，允许进一步的自定义
-- Web：在浏览器中运行，无需在多台设备上安装客户端
-- 配置同步：在后端统一保存服务器配置和密钥，无需在多台设备上重复配置
-- 迅速响应：后端与服务器长期维护 SSH 连接，而不是打开客户端后才开始连接
-- 插件生态：兼容 VSCode 插件
+- Powerful file editing experience: Based on VSCode, it supports syntax highlighting, intelligent prompts, and shortcuts.
+- Multi-server support: Copy and move files between multiple servers.
+- Open-source: Prevents malicious key leaks and allows for further customization.
+- Web-based: Runs in a browser without needing to install clients on multiple devices.
+- Configuration synchronization: Saves server configurations and keys at the backend, eliminating the need for repeated setups across devices.
+- Quick response: Maintains long-term SSH connections with servers from the backend instead of establishing connections after opening the client.
+- Plugin ecosystem: Compatible with VSCode plugins.
 
-VSCode Remote 用于管理服务器时非常便利。其布局为左侧文件栏，右边文件内容和终端。得益于文件栏、终端的联动和 VSCode 本身强大的文本编辑功能，VSCode Remote 具有远好于 XSHELL、XFTP、WinSCP、FinalShell 的使用体验。然而，VSCode Remote 具有以下缺点
+VSCode Remote is very convenient for managing servers, featuring a layout with a file bar on the left side and file content and terminal on the right. Thanks to the integration of the file bar, terminal linkage, and VSCode's robust text editing capabilities, VSCode Remote offers a far superior user experience compared to XSHELL, XFTP, WinSCP, FinalShell. However, VSCode Remote has the following drawbacks:
 
-- 缺乏多服务器支持：只能一个个点开需要连接的服务器，而且无法在服务器之间复制、移动文件
-- 不开源：尽管 VSCode 本体是开源的，但是 VSCode Remote 不开源
-- 安装 Agent：需要在服务器上安装 Agent，因此产生了各种问题。
-    - Agent 安装/更新时下载失败
-    - Agent 基于 Node，无法安装在某些特定的发行版上
-    - Agent 无法运行在太老的发行版上
-    - Agent 安装可能会违反服务器的安全管理规则
-- 客户端安装：需要在每个设备上安装、持续更新 VSCode
-- 配置难以同步：需要在每个设备上反复配置服务器连接信息、密钥
-- 响应慢：连接服务器时，会新建窗口、建立连接，每个服务器都需等待好几秒。网络中断后，需要痛苦地重复以上流程
+- Lack of multi-server support: Can only open one server connection at a time and cannot copy or move files between servers.
+- Not open-source: Although VSCode itself is open-source, VSCode Remote is not.
+- Installation of Agent: Requires installing an agent on the server, leading to various issues such as download failures during installation/updates, compatibility issues with certain Linux distributions, and potential violations of server security policies.
+- Client installation: Needs to be installed and continuously updated on each device.
+- Difficult configuration synchronization: Server connection information and keys need to be repeatedly configured on each device.
+- Slow response: Establishes new windows and connections when connecting to servers, requiring several seconds for each server. Reconnection is required after network interruptions.
 
-LiteSSH 在 VSCode 的基础上，避免了对 Agent 的依赖，因此在运维场景下拥有更高的效率。但是，Agent 的缺失使 LiteSSH 插件无法与服务器环境交互，因此复杂的远程开发仍然需要 VSCode Remote。（当然，也可以通过 code-server 实现远程开发）
+LiteSSH improves upon VSCode by avoiding dependency on Agents, thereby achieving higher efficiency in operation and maintenance scenarios. However, the lack of an Agent means LiteSSH plugins cannot interact with the server environment, so complex remote development still requires VSCode Remote (or can alternatively use code-server for remote development).
 
-## 快速开始
+## Quick Start
 
-准备 Docker Compose 文件
+Prepare the configuration file and Docker Compose declaration file:
 
 ```sh
-git clone https://github.com/117503445/litessh.git
+git clone https://github.com/117503445/LiteSSH.git
+cd LiteSSH/docs/example
 ```
 
+For users in mainland China, pull the Docker image from Alibaba Cloud ACR:
+
+```sh
 docker pull registry.cn-hangzhou.aliyuncs.com/117503445/litessh && docker tag registry.cn-hangzhou.aliyuncs.com/117503445/litessh 117503445/litessh
+```
+
+Start the service:
+
+```sh
+docker compose up -d
+```
+
+Open in your browser <http://localhost:4444/?folder=/remote>, enter the password 123456, and start managing server1, server2, and server3.
+
+Click "Open in Remote Terminal" on Files/Folders to open the remote terminal.
+
+You can also directly input `r server3` in the terminal to remotely connect to server3.
+
+## Configuration Reference
+
+Use TOML format configuration files. Here is an example based on the quick start configuration:
+
+```toml
+code-server-password = "123456"
+
+[nodes.server1]
+host = "server1"
+pri = "/root/.ssh/id_ed25519"
+# default path is ~
+# default user is root
+# default port is 22
+
+[nodes.server2]
+host = "server2"
+pri = "/root/.ssh/id_ed25519"
+path = ".ssh" # use relative path of ~
+
+[nodes.server3]
+host = "server3"
+pri = "/root/.ssh/id_ed25519"
+path = "/etc" # use absolute path
+```
+
+The `code-server-password` is the password for code-server. It defaults to empty. When `code-server-password` is empty, you can log in to code-server without a password.
+
+`nodes` is an array where each element represents a server. `nodes.server1` defines the configuration for server1.
+
+Each server supports the following configurations:
+
+| Config | Default Value | Required | Description |
+| --- | --- | --- | --- |
+| host | - | Yes | The hostname or IP address of the server |
+| port | 22 | No | The SSH port of the server |
+| user | root | No | The username of the server |
+| pri | - | Yes | Path to the private key |
+| path | ~ | No | The mounted directory on the server |
+
+Only private key login is supported, not password login.
+
+## Implementation
+
+Understanding how LiteSSH is implemented can help you troubleshoot related issues.
+
+The LiteSSH image is based on ArchLinux and comes pre-installed with code-server. Additionally, it compiles and installs the LiteSSH plugin to add the feature of opening a remote terminal via right-click.
+
+Upon container startup, the entrypoint performs two tasks:
+- Launching code-server and setting the password according to the configuration file.
+- Starting the LiteSSH service and mounting each server's specified directories under `/remote` using Rclone based on the configuration file.
+
+After opening the remote terminal, the LiteSSH plugin opens a new terminal and inputs `r $path`, where `$path` is the directory path clicked by the user. Upon receiving the `$path` parameter, the `r` program generates and executes an SSH command based on the configuration file to open the remote terminal. 
+
+The `/workspace/logs` directory inside the container contains logs for code-server, LiteSSH, and each Rclone service.
