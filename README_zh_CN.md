@@ -1,68 +1,68 @@
 # LiteSSH
 
-> Lightweight multi-server management with a powerful VSCode editing experience, making remote work more efficient and seamless.
+> 轻量级的多服务器管理，强大的 VSCode 编辑体验，让远程工作更加高效无缝
 
-LiteSSH offers the following advantages:
+LiteSSH 具有以下优点
 
-- **Powerful file editing experience**: Based on VSCode, supporting syntax highlighting, intelligent suggestions, and shortcuts.
-- **Multi-server support**: Copy and move files between multiple servers.
-- **Open source**: Prevents malicious key leaks and allows for further customization.
-- **Web-based**: Runs in the browser, eliminating the need to install clients on multiple devices.
-- **Configuration synchronization**: Saves server configurations and keys on the backend, avoiding repetitive configurations on multiple devices.
-- **Quick response**: Maintains long-term SSH connections with servers on the backend, rather than establishing connections only when the client is opened.
-- **Plugin ecosystem**: Compatible with VSCode plugins.
+- 强大的文件编辑体验：基于 VSCode，支持语法高亮、智能提示、快捷键
+- 多服务器支持：在多个服务器之间复制、移动文件
+- 开源：防止恶意的密钥泄露，允许进一步的自定义
+- Web：在浏览器中运行，无需在多台设备上安装客户端
+- 配置同步：在后端统一保存服务器配置和密钥，无需在多台设备上重复配置
+- 迅速响应：后端与服务器长期维护 SSH 连接，而不是打开客户端后才开始连接
+- 插件生态：兼容 VSCode 插件
 
-VSCode Remote is very convenient for managing servers. Its layout includes a file bar on the left and file content and terminal on the right. Thanks to the integration of the file bar, terminal, and VSCode's powerful text editing capabilities, VSCode Remote offers a much better user experience compared to XSHELL, XFTP, WinSCP, and FinalShell. However, VSCode Remote has the following drawbacks:
+VSCode Remote 用于管理服务器时非常便利。其布局为左侧文件栏，右边文件内容和终端。得益于文件栏、终端的联动和 VSCode 本身强大的文本编辑功能，VSCode Remote 具有远好于 XSHELL、XFTP、WinSCP、FinalShell 的使用体验。然而，VSCode Remote 具有以下缺点
 
-- **Lack of multi-server support**: You can only connect to servers one by one, and you cannot copy or move files between servers.
-- **Not open source**: Although VSCode itself is open source, VSCode Remote is not.
-- **Agent installation**: Requires installing an Agent on the server, leading to various issues:
-  - Agent installation/update download failures.
-  - Agent is based on Node and cannot be installed on certain specific distributions.
-  - Agent cannot run on very old distributions.
-  - Agent installation may violate server security management rules.
-- **Client installation**: Requires installing and continuously updating VSCode on each device.
-- **Difficult configuration synchronization**: Requires repeatedly configuring server connection information and keys on each device.
-- **Slow response**: When connecting to a server, a new window is created and a connection is established, with each server taking several seconds to connect. After a network interruption, the process must be painfully repeated.
+- 缺乏多服务器支持：只能一个个点开需要连接的服务器，而且无法在服务器之间复制、移动文件
+- 不开源：尽管 VSCode 本体是开源的，但是 VSCode Remote 不开源
+- 安装 Agent：需要在服务器上安装 Agent，因此产生了各种问题。
+    - Agent 安装/更新时下载失败
+    - Agent 基于 Node，无法安装在某些特定的发行版上
+    - Agent 无法运行在太老的发行版上
+    - Agent 安装可能会违反服务器的安全管理规则
+- 客户端安装：需要在每个设备上安装、持续更新 VSCode
+- 配置难以同步：需要在每个设备上反复配置服务器连接信息、密钥
+- 响应慢：连接服务器时，会新建窗口、建立连接，每个服务器都需等待好几秒。网络中断后，需要痛苦地重复以上流程
 
-LiteSSH, based on VSCode, avoids the dependency on Agents, thus offering higher efficiency in operational scenarios. However, the absence of an Agent means LiteSSH plugins cannot interact with the server environment, so complex remote development still requires VSCode Remote. (Of course, remote development can also be achieved through code-server.)
+LiteSSH 在 VSCode 的基础上，避免了对 Agent 的依赖，因此在运维场景下拥有更高的效率。但是，Agent 的缺失使 LiteSSH 插件无法与服务器环境交互，因此复杂的远程开发仍然需要 VSCode Remote。（当然，也可以通过 code-server 实现远程开发）
 
-## Quick Start
+## 快速开始
 
-Prepare the configuration file and Docker Compose declaration file:
+准备配置文件和 Docker Compose 声明文件
 
 ```sh
 git clone https://github.com/117503445/LiteSSH.git
 cd LiteSSH/docs/example
 ```
 
-For users in mainland China, you can pull the Docker image from Alibaba Cloud ACR:
+对于中国大陆用户，可以从阿里云 ACR 拉取 Docker 镜像
 
 ```sh
 docker pull registry.cn-hangzhou.aliyuncs.com/117503445/litessh && docker tag registry.cn-hangzhou.aliyuncs.com/117503445/litessh 117503445/litessh
 ```
 
-Start the service:
+启动服务
 
 ```sh
 docker compose up -d
 ```
 
-Open <http://localhost:4444/?folder=/remote> in your browser and enter the password `123456`.
+在浏览器中打开 <http://localhost:4444/?folder=/remote>，输入密码 123456
 
-You can now start managing server1, server2, and server3.
+即可开始管理 server1、server2 和 server3
 
 ![index](./docs/assets/index.png)
 
-Click "Open in Remote Terminal" on a file/folder to open a remote terminal.
+在 文件/文件夹 上点击 Open in Remote Terminal，即可打开远程终端
 
 ![terminal](./docs/assets/terminal.png)
 
-You can also directly enter `r server3` in the terminal to remotely connect to server3.
+也可以直接在终端输入 `r server3`，即可远程连接到 server3。
 
-## Configuration Reference
+## 配置参考
 
-Use the TOML format configuration file. Take the configuration in the quick start as an example:
+使用 TOML 格式配置文件，以快速开始中的配置为例
 
 ```toml
 code-server-password = "123456"
@@ -85,32 +85,32 @@ pri = "/root/.ssh/id_ed25519"
 path = "/etc" # use absolute path
 ```
 
-`code-server-password` is the password for code-server. The default is empty. When `code-server-password` is empty, code-server can be logged into without a password.
+`code-server-password` 是 code-server 的密码。默认为空。当 `code-server-password` 为空时，code-server 无需密码即可登录。
 
-`nodes` is an array, where each element represents a server. `nodes.server1` defines the configuration for server1.
+`nodes` 是一个数组，每个数组元素代表一个服务器。`nodes.server1` 定义了 server1 服务器的配置。
 
-Each server supports the following configurations:
+每个服务器支持以下配置
 
-| Configuration Item | Default Value | Required | Description |
+| 配置项 | 默认值 | 是否必须 | 描述 |
 | --- | --- | --- | --- |
-| host | - | Yes | The hostname or IP address of the server |
-| port | 22 | No | The SSH port of the server |
-| user | root | No | The username of the server |
-| pri | - | Yes | The path to the private key |
-| path | ~ | No | The mounted directory on the server. When `path` is empty, it defaults to `~`; when `path` starts with `/`, it represents an absolute path; otherwise, it is a relative path under `~`, such as `.ssh` representing `~/.ssh`. |
+| host | - | 是 | 服务器的主机名或 IP 地址 |
+| port | 22 | 否 | 服务器的 SSH 端口 |
+| user | root | 否 | 服务器的用户名 |
+| pri | - | 是 | 私钥路径 |
+| path | ~ | 否 | 服务器的挂载目录。当 `path` 为空时，默认为 `~`；当 `path` 以 `/` 开头时，表示绝对路径；否则，为 `~` 下的相对路径，如 `.ssh` 表示 `~/.ssh` |
 
-Only private key login is supported; password login is not supported.
+只支持私钥登录，不支持密码登录。
 
-## Implementation
+## 实现
 
-Understanding how LiteSSH is implemented can help you locate and resolve related issues.
+了解 LiteSSH 的实现方式，可以帮助你定位解决相关问题。
 
-The LiteSSH image is based on ArchLinux and comes pre-installed with code-server. Additionally, the LiteSSH plugin is compiled, packaged, and installed to add the right-click "Open in Remote Terminal" feature.
+LiteSSH 镜像基于 ArchLinux，预装了 code-server。此外，还编译打包安装了 LiteSSH 插件，用于添加右键打开远程终端功能。
 
-When the container starts, the entrypoint is launched first. The entrypoint does the following two things:
-- Starts code-server and sets the password according to the configuration file.
-- Starts the litessh service and, based on the configuration file, uses Rclone to mount the specified directory of each server under `/remote`.
+容器启动时，首先启动 entrypoint。entrypoint 会做这 2 件事
+- 启动 code-server，并根据配置文件设置密码
+- 启动 litessh 服务，并根据配置文件，使用 Rclone 将每个服务器的指定目录挂载在 `/remote` 下
 
-After the user opens a remote terminal, the LiteSSH plugin opens a new terminal and enters `r $path`, where `$path` is the directory path clicked by the user. The `r` program receives the `$path` parameter, combines it with the configuration file, generates and executes the SSH command to open the remote terminal.
+用户在打开远程终端后，LiteSSH 插件打开新终端，并输入 `r $path`。其中 `$path` 为用户点击的目录路径。`r` 程序接收 `$path` 参数后，结合配置文件，生成并执行 SSH 命令，实现打开远程终端。
 
-The `/workspace/logs` directory in the container contains logs for code-server, litessh, and each Rclone service.
+容器中的 `/workspace/logs` 包含了 code-server、litessh、每个 Rclone 服务的日志。
