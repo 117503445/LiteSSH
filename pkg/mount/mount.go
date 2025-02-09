@@ -66,8 +66,7 @@ key_file = %v
 			mountName = fmt.Sprintf("%s:%s", name, node.Path)
 		}
 
-		// cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "-vvv"}
-		cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "--low-level-retries", "2147483647", "-vvv"}
+		cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "--low-level-retries", "2147483647", "-v"}
 		logger.Info().Strs("cmds", cmds).Msg("")
 		common.ExecWithLogs(cmds, "rclone/"+name)
 	}
