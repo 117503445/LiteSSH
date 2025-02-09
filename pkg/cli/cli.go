@@ -15,6 +15,7 @@ type SshNode struct {
 	Host string `help:"node host"`
 	Port int    `help:"node port"`
 	User string `help:"node user"`
+	Path string `help:"node path to mount"`
 	Pri  string `help:"node private key path"`
 }
 
@@ -55,7 +56,7 @@ func cfgCheck() {
 		}
 
 		if node.Pri == "" {
-			logger.Fatal().Msg("node pri is empty")
+			logger.Fatal().Msg("node pubkey path is empty")
 		} else {
 			if !goutils.FileExists(node.Pri) {
 				logger.Fatal().Msg("node pubkey path is not exists")
@@ -83,11 +84,17 @@ func cfgSetDefault() {
 				user = node.User
 			}
 
+			path := "~"
+			if node.Path != "" {
+				path = node.Path
+			}
+
 			newNode := SshNode{
 				Host: node.Host,
 				Port: port,
 				User: user,
 				Pri:  node.Pri,
+				Path: path,
 			}
 			newNodes[name] = newNode
 		}

@@ -58,7 +58,16 @@ key_file = %v
 		if err != nil {
 			logger.Fatal().Err(err).Msg("create node dir failed")
 		}
-		cmds := []string{"rclone", "mount", name + ":", dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "-vvv"}
+		// -t "cd /root/.k8s && \$SHELL -l"
+
+		mountName := ""
+		if node.Path == "~" {
+			mountName = fmt.Sprintf("%s:", name)
+		} else {
+			mountName = fmt.Sprintf("%s:%s", name, node.Path)
+		}
+
+		cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "-vvv"}
 		cmd := exec.Command(cmds[0], cmds[1:]...)
 		logger.Info().Str("cmd", cmd.String()).Msg("")
 		cmd.Stdout = os.Stdout
