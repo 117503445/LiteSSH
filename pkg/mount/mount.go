@@ -58,7 +58,6 @@ key_file = %v
 		if err != nil {
 			logger.Fatal().Err(err).Msg("create node dir failed")
 		}
-		// -t "cd /root/.k8s && \$SHELL -l"
 
 		mountName := ""
 		if node.Path == "~" {

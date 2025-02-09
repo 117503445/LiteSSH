@@ -1,12 +1,13 @@
 package cli
 
-import "maps"
-
 import (
+	"maps"
 	"regexp"
+	"strings"
 
 	"github.com/117503445/goutils"
 	"github.com/alecthomas/kong"
+
 	kongtoml "github.com/alecthomas/kong-toml"
 	"github.com/rs/zerolog/log"
 )
@@ -87,6 +88,9 @@ func cfgSetDefault() {
 			path := "~"
 			if node.Path != "" {
 				path = node.Path
+			}
+			if path != "/" && strings.HasSuffix(path, "/") {
+				path = path[:len(path)-1]
 			}
 
 			newNode := SshNode{
