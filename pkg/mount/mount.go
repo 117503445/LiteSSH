@@ -3,11 +3,11 @@ package mount
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"sync"
 
 	"github.com/117503445/goutils"
 	"github.com/117503445/vscode-lite-ssh/pkg/cli"
+	"github.com/117503445/vscode-lite-ssh/pkg/common"
 	"github.com/rs/zerolog/log"
 )
 
@@ -66,15 +66,10 @@ key_file = %v
 			mountName = fmt.Sprintf("%s:%s", name, node.Path)
 		}
 
-		cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "-vvv"}
-		cmd := exec.Command(cmds[0], cmds[1:]...)
-		logger.Info().Str("cmd", cmd.String()).Msg("")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stdout
-		err = cmd.Run()
-		if err != nil {
-			logger.Fatal().Err(err).Msg("mount failed")
-		}
+		// cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "-vvv"}
+		cmds := []string{"rclone", "mount", mountName, dirNode, "--allow-non-empty", "--allow-other", "--vfs-cache-mode", "full", "--low-level-retries", "2147483647", "-vvv"}
+		logger.Info().Strs("cmds", cmds).Msg("")
+		common.ExecWithLogs(cmds, "rclone/"+name)
 	}
 
 	var sg sync.WaitGroup
