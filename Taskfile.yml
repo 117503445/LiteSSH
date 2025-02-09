@@ -30,4 +30,4 @@ tasks:
   run-image:
     deps: [build-mainland]
     cmds:
-      - docker run --hostname=litessh --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined -it --rm -p 4445:4444 -v /workspace/logs:/workspace/logs -v /workspace/config.toml:/workspace/config.toml -v /root/.ssh/id_ed25519:/root/.ssh/id_ed25519 117503445/litessh
+      - docker run --hostname=litessh --cap-add SYS_ADMIN --device /dev/fuse -it --rm -p 4445:4444 -v /workspace/logs:/workspace/logs -v /workspace/config.toml:/workspace/config.toml -v /root/.ssh/id_ed25519:/root/.ssh/id_ed25519 117503445/litessh
