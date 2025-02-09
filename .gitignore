@@ -5,4 +5,5 @@ dist
 .vscode-test-web
 *.vsix
 config.toml
+!docs/example/config/config.toml
 logs

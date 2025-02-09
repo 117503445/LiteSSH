@@ -1,0 +1,31 @@
+name: litessh
+
+services:
+  litessh:
+    image: 117503445/litessh
+    hostname: litessh
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - "/dev/fuse:/dev/fuse"
+    ports:
+      - "4444:4444"
+    volumes:
+      - ./config/config.toml:/workspace/config.toml
+      - ./config/id_ed25519:/root/.ssh/id_ed25519
+      - ./logs:/workspace/logs
+  server1:
+    image: 117503445/sshd
+    restart: unless-stopped
+    volumes:
+      - ./config/id_ed25519.pub:/root/.ssh/authorized_keys
+  server2:
+    image: 117503445/sshd
+    restart: unless-stopped
+    volumes:
+      - ./config/id_ed25519.pub:/root/.ssh/authorized_keys
+  server3:
+    image: 117503445/sshd
+    restart: unless-stopped
+    volumes:
+      - ./config/id_ed25519.pub:/root/.ssh/authorized_keys

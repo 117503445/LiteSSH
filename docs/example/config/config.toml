@@ -1,0 +1,18 @@
+code-server-password = "123456"
+
+[nodes.server1]
+host = "server1"
+pri = "/root/.ssh/id_ed25519"
+# default path is ~
+# default user is root
+# default port is 22
+
+[nodes.server2]
+host = "server2"
+pri = "/root/.ssh/id_ed25519"
+path = ".ssh" # use relative path of ~
+
+[nodes.server3]
+host = "server3"
+pri = "/root/.ssh/id_ed25519"
+path = "/etc" # use absolute path
