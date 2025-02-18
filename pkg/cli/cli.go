@@ -31,6 +31,7 @@ func cfgCheck() {
 	// }
 
 	// name must only contain [a-zA-Z0-9_]
+	// TODO: allow `-` ?
 	isValidName := func(name string) bool {
 		matched, _ := regexp.MatchString(`^[a-zA-Z0-9_]+$`, name)
 		return matched
